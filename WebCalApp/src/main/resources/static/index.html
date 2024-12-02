@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+
+    <style>
+        /* Center all content in the body */
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin: 0;
+            margin-right: 80px;
+            font-size: 2rem;
+        }
+
+
+        .ResponseBox {
+            width: 345px;          /* Box width */
+            height: 50px;         /* Box height */
+            padding: 20px;         /* Space inside the box */
+            display: flex;           /* Use Flexbox */
+            justify-content: center; /* Center horizontally */
+            align-items: center;     /* Center vertically */
+            background-color: #FFECD7; /* Background color */
+            margin-bottom: 20px;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        h2, h3 {
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        textarea {
+            margin-bottom: 20px;
+        }
+
+        button {
+            width: 500px;
+            height: 100px;
+            margin: 10px 0;
+        }
+
+        .buttonClear {
+            width: 150px;
+            height: 22px;
+        }
+
+        .buttonSampleDeviation {
+            width: 22%;
+            height: 10%;
+        }
+
+        .buttonPopulationDeviation {
+            width: 22%;
+            height: 10%;
+        }
+
+        .buttonMean {
+            width: 22%;
+            height: 10%;
+        }
+
+        .buttonZScore {
+            width: 22%;
+            height: 10%;
+        }
+
+        .buttonLinearFormula {
+            width: 22%;
+            height: 10%;
+        }
+
+        .buttonPredictY {
+            width: 22%;
+            height: 10%;
+        }
+
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>Calculator</h1>
+    <button class="buttonClear">Clear</button>
+</div>
+<div class="ResponseBox">
+    Enter values below and select an operation
+</div>
+<h3>Values</h3>
+
+<form id="GetValues">
+    <textarea id="values" rows="10" cols="50" ></textarea><br>
+</form>
+
+<h2>Descriptive Statistics</h2>
+<button class="buttonSampleDeviation">Compute Sample Standard Deviation | one value per line</button><br>
+<button class="buttonPopulationDeviation">Compute Population Standard Deviation | one value per line</button><br>
+<button class="buttonMean">Compute Mean | one value per line</button><br>
+<button class="buttonZScore">Compute Z Score | Value, mean, stdDev on one line</button><br>
+
+<h2>Single Linear Regression</h2>
+<button class="buttonLinearFormula">Compute Single Linear Regression Formula | one z,y, pair per line</button><br>
+<button class="buttonPredictY">Predict Y from Linear Regression Formula | x, m, b on one line</button><br>
+
+<script>
+
+    // Event listener for the "Compute Sample Standard Deviation" button
+    document.querySelector('.buttonSampleDeviation').addEventListener('click', () => {
+        // Get input values
+        const values = document.getElementById('values').value;
+
+        // Make a POST request to the backend
+        fetch('/computeSampleDeviation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `values=${encodeURIComponent(values)}`
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to compute sample deviation');
+                }
+                return response.text();
+            })
+            .then(data => {
+                // Display the result in the ResponseBox
+                if(data === "Invalid Input"){
+                    const responseBox = document.querySelector('.ResponseBox');
+                    responseBox.style.backgroundColor = '#B70F0A';
+                    responseBox.style.fontWeight = 'bold';
+                    responseBox.style.color = '#FFFFFF'
+                    document.querySelector('.ResponseBox').textContent = data;
+                }else if(data === "List must contain at least 2 numbers") {
+                    const responseBox = document.querySelector('.ResponseBox');
+                    responseBox.style.backgroundColor = '#B70F0A';
+                    responseBox.style.fontWeight = 'bold';
+                    responseBox.style.color = '#FFFFFF'
+                    document.querySelector('.ResponseBox').textContent = data;
+                }else{
+                    const responseBox = document.querySelector('.ResponseBox');
+                    responseBox.style.backgroundColor = '#FFECD7';
+                    responseBox.style.fontWeight = null;
+                    responseBox.style.color = null;
+                    responseBox.style.fontWeight = 'bold';
+                    document.querySelector('.ResponseBox').textContent = data;
+                }
+            })
+            .catch(error => {
+                // Handle any errors
+                document.querySelector('.ResponseBox').textContent = `Error: ${error.message}`;
+            });
+    });
+
+    // Event listener for the "Compute Sample Standard Deviation" button
+    document.querySelector('.buttonPopulationDeviation').addEventListener('click', () => {
+        // Get input values
+        const values = document.getElementById('values').value;
+
+        // Make a POST request to the backend
+        fetch('/computePopulationDeviation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `values=${encodeURIComponent(values)}`
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to compute sample deviation');
+                }
+                return response.text();
+            })
+            .then(data => {
+                if(data === "Invalid Input"){
+                    const responseBox = document.querySelector('.ResponseBox');
+                    responseBox.style.backgroundColor = '#B70F0A';
+                    responseBox.style.fontWeight = 'bold';
+                    responseBox.style.color = '#FFFFFF'
+                    document.querySelector('.ResponseBox').textContent = data;
+                }else if(data === "List must contain at least 2 numbers") {
+                    const responseBox = document.querySelector('.ResponseBox');
+                    responseBox.style.backgroundColor = '#B70F0A';
+                    responseBox.style.fontWeight = 'bold';
+                    responseBox.style.color = '#FFFFFF'
+                    document.querySelector('.ResponseBox').textContent = data;
+                }else{
+                    const responseBox = document.querySelector('.ResponseBox');
+                    responseBox.style.backgroundColor = '#FFECD7';
+                    responseBox.style.fontWeight = null;
+                    responseBox.style.color = null;
+                    responseBox.style.fontWeight = 'bold';
+                    document.querySelector('.ResponseBox').textContent = data;
+                }
+            })
+            .catch(error => {
+                // Handle any errors
+                document.querySelector('.ResponseBox').textContent = `Error: ${error.message}`;
+            });
+    });
+
+    // Event listener for the "Compute Sample Standard Deviation" button
+    document.querySelector('.buttonMean').addEventListener('click', () => {
+        // Get input values
+        const values = document.getElementById('values').value;
+
+        // Make a POST request to the backend
+        fetch('/computeMean', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `values=${encodeURIComponent(values)}`
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to compute sample deviation');
+                }
+                return response.text();
+            })
+            .then(data => {
+                if(data === "Invalid Input"){
+                    const responseBox = document.querySelector('.ResponseBox');
+                    responseBox.style.backgroundColor = '#B70F0A';
+                    responseBox.style.fontWeight = 'bold';
+                    responseBox.style.color = '#FFFFFF'
+                    document.querySelector('.ResponseBox').textContent = data;
+                }else if(data === "List must contain at least 2 numbers") {
+                    const responseBox = document.querySelector('.ResponseBox');
+                    responseBox.style.backgroundColor = '#B70F0A';
+                    responseBox.style.fontWeight = 'bold';
+                    responseBox.style.color = '#FFFFFF'
+                    document.querySelector('.ResponseBox').textContent = data;
+                }else{
+                    const responseBox = document.querySelector('.ResponseBox');
+                    responseBox.style.backgroundColor = '#FFECD7';
+                    responseBox.style.fontWeight = null;
+                    responseBox.style.color = null;
+                    responseBox.style.fontWeight = 'bold';
+                    document.querySelector('.ResponseBox').textContent = data;
+                }
+            })
+            .catch(error => {
+                // Handle any errors
+                document.querySelector('.ResponseBox').textContent = `Error: ${error.message}`;
+            });
+    });
+
+    // Event listener for the "Compute Sample Standard Deviation" button
+    document.querySelector('.buttonZScore').addEventListener('click', () => {
+        // Get input values
+        const rawValues = document.getElementById('values').value;
+        let formattedValues = rawValues;
+
+        if (rawValues.includes('\n')) {
+            const responseBox = document.querySelector('.ResponseBox');
+            responseBox.textContent = 'Error: Enter all numbers on the same line, separated by commas';
+            responseBox.style.backgroundColor = '#B70F0A';
+            responseBox.style.fontWeight = 'bold';
+            responseBox.style.color = '#FFFFFF'
+            return; // Stop further processing
+        }else{
+            formattedValues = rawValues
+                .split(/\s+/) // Split by whitespace or newlines
+                .filter(value => value.trim() !== '') // Remove empty lines
+                .join(','); // Join them with commas
+        }
+
+        // Make a POST request to the backend for "computeMean"
+        fetch('/computeZScore', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `values=${encodeURIComponent(formattedValues)}` // Send the formatted values
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to compute sample deviation');
+                }
+                return response.text();
+            })
+            .then(data => {
+                if(data === "Invalid Input"){
+                    const responseBox = document.querySelector('.ResponseBox');
+                    responseBox.style.backgroundColor = '#B70F0A';
+                    responseBox.style.fontWeight = 'bold';
+                    responseBox.style.color = '#FFFFFF'
+                    document.querySelector('.ResponseBox').textContent = data;
+                }else if(data === "List must contain ONLY 3 numbers") {
+                    const responseBox = document.querySelector('.ResponseBox');
+                    responseBox.style.backgroundColor = '#B70F0A';
+                    responseBox.style.fontWeight = 'bold';
+                    responseBox.style.color = '#FFFFFF'
+                    document.querySelector('.ResponseBox').textContent = data;
+                }else{
+                    const responseBox = document.querySelector('.ResponseBox');
+                    responseBox.style.backgroundColor = '#FFECD7';
+                    responseBox.style.fontWeight = null;
+                    responseBox.style.color = null;
+                    responseBox.style.fontWeight = 'bold';
+                    document.querySelector('.ResponseBox').textContent = data;
+                }
+            })
+            .catch(error => {
+                // Handle any errors
+                document.querySelector('.ResponseBox').textContent = `Error: ${error.message}`;
+            });
+    });
+
+    // Event listener for the "Compute Sample Standard Deviation" button
+    document.querySelector('.buttonPredictY').addEventListener('click', () => {
+        // Get input values
+        const rawValues = document.getElementById('values').value;
+        let formattedValues = rawValues;
+
+        if (rawValues.includes('\n')) {
+            const responseBox = document.querySelector('.ResponseBox');
+            responseBox.textContent = 'Error: Enter all numbers on the same line, separated by commas';
+            responseBox.style.backgroundColor = '#B70F0A';
+            responseBox.style.fontWeight = 'bold';
+            responseBox.style.color = '#FFFFFF'
+            return; // Stop further processing
+        }else{
+            formattedValues = rawValues
+                .split(/\s+/) // Split by whitespace or newlines
+                .filter(value => value.trim() !== '') // Remove empty lines
+                .join(','); // Join them with commas
+        }
+
+        // Make a POST request to the backend for "computeMean"
+        fetch('/computePredictY', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `values=${encodeURIComponent(formattedValues)}` // Send the formatted values
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error');
+                }
+                return response.text();
+            })
+            .then(data => {
+                if(data === "Invalid Input"){
+                    const responseBox = document.querySelector('.ResponseBox');
+                    responseBox.style.backgroundColor = '#B70F0A';
+                    responseBox.style.fontWeight = 'bold';
+                    responseBox.style.color = '#FFFFFF'
+                    document.querySelector('.ResponseBox').textContent = data;
+                }else if(data === "List must contain ONLY 3 numbers") {
+                    const responseBox = document.querySelector('.ResponseBox');
+                    responseBox.style.backgroundColor = '#B70F0A';
+                    responseBox.style.fontWeight = 'bold';
+                    responseBox.style.color = '#FFFFFF'
+                    document.querySelector('.ResponseBox').textContent = data;
+                }else{
+                    const responseBox = document.querySelector('.ResponseBox');
+                    responseBox.style.backgroundColor = '#FFECD7';
+                    responseBox.style.fontWeight = null;
+                    responseBox.style.color = null;
+                    responseBox.style.fontWeight = 'bold';
+                    document.querySelector('.ResponseBox').textContent = data;
+                }
+            })
+            .catch(error => {
+                // Handle any errors
+                document.querySelector('.ResponseBox').textContent = `Error: ${error.message}`;
+            });
+    });
+
+    document.querySelector('.buttonLinearFormula').addEventListener('click', () => {
+        // Get input values from textarea
+        const rawValues = document.getElementById('values').value;
+
+        // Process input to extract X,Y pairs, ignoring empty lines
+        const xyPairs = rawValues
+            .split('\n') // Split by lines
+            .map(line => line.trim()) // Trim each line
+            .filter(line => line.length > 0); // Remove empty lines
+
+        // Validate the number of pairs
+        if (xyPairs.length < 2) {
+            const responseBox = document.querySelector('.ResponseBox');
+            responseBox.textContent = 'Enter at least two X,Y pairs, one per line.';
+            responseBox.style.backgroundColor = '#B70F0A';
+            responseBox.style.fontWeight = 'bold';
+            responseBox.style.color = '#FFFFFF'
+            return; // Stop further processing
+        }
+
+        // Validate and format X,Y pairs
+        const formattedPairs = [];
+        for (const pair of xyPairs) {
+            const xy = pair.split(',').map(value => value.trim()); // Split into X and Y
+            if (xy.length !== 2 || isNaN(xy[0]) || isNaN(xy[1])) {
+                const responseBox = document.querySelector('.ResponseBox');
+                responseBox.textContent = 'Each line must contain a valid X,Y pair.';
+                responseBox.style.backgroundColor = '#B70F0A';
+                responseBox.style.fontWeight = 'bold';
+                responseBox.style.color = '#FFFFFF'
+                return;
+            }
+            formattedPairs.push(`${xy[0]},${xy[1]}`); // Add valid X,Y pair
+        }
+
+        // Make a POST request to the backend
+        fetch('/calculateLinearEquation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `pairs=${encodeURIComponent(formattedPairs.join('|'))}` // Join pairs with '|'
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to calculate linear equation');
+                }
+                return response.text();
+            })
+            .then(data => {
+                // Get the ResponseBox
+                const responseBox = document.querySelector('.ResponseBox');
+
+                // Clear existing content
+                responseBox.textContent = '';
+                responseBox.style.backgroundColor = '#FFECD7'; // Reset background color
+
+                // Display the result
+                const resultMessage = document.createElement('div');
+                resultMessage.textContent = `Linear Equation: ${data}`; // Add the result
+                resultMessage.style.fontWeight = 'bold'; // Optional: Bold for emphasis
+                responseBox.appendChild(resultMessage);
+                responseBox.style.color = null;
+            })
+            .catch(error => {
+                // Handle any errors
+                const responseBox = document.querySelector('.ResponseBox');
+                responseBox.style.backgroundColor = '#B70F0A';
+                responseBox.style.fontWeight = 'bold';
+                responseBox.style.color = '#FFFFFF' // Change background color to default
+                responseBox.textContent = `Error: `;
+            });
+    });
+
+
+    // Event listener for the "Clear" button
+    document.querySelector('.buttonClear').addEventListener('click', () => {
+        const responseBox = document.querySelector('.ResponseBox');
+        responseBox.style.backgroundColor = '#FFECD7';
+        document.getElementById('values').value = '';
+        responseBox.style.color = null;
+        document.querySelector('.ResponseBox').textContent = 'Enter values below and select an operation';
+    });
+
+</script>
+
+</body>
+</html>
